@@ -50,6 +50,6 @@ public_ip=$(aws ec2 describe-instances \
 
 # Write instance data to a file
 # COMPLETE THIS PART
-echo "Instance ID: $instance_id" > infrastructure_data
-echo "Public IP: $public_ip" >> instrastructure_data
+echo "Instance ID: $instance_id" > instance_data
+echo "Public IP: $public_ip" >> instance_data
 echo "Written Successfully"
