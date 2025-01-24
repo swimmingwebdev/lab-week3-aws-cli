@@ -4,9 +4,25 @@ set -eu
 
 region="us-west-2"
 key_name="bcitkey"
+private_key_file="./bcitkey.pem"
 public_key_file="./bcitkey.pub"
 
 source ./infrastructure_data
+
+if ! aws ec2 describe-key-pairs --key-name "$key_name" --region "$region" > /dev/null 2>&1; then
+    echo "Key pair '$key_name' does not exist. Creating a new key pair..."
+
+    aws ec2 create-key-pair --key-name "$key_name" --region "$region" \
+    --query "KeyMaterial" --output text > "$private_key_file"
+
+    chmod 400 "$private_key_file"
+
+    ssh-keygen -y -f "$private_key_file" > "$public_key_file"
+
+    echo "Key pair '$key_name' created successfully."
+else
+    echo "Key pair '$key_name' already exists in AWS."
+fi
 
 if ! aws ec2 describe-key-pairs --key-name "$key_name" --region "$region" > /dev/null 2>&1; then
     echo "Importing key pair '$key_name'..."
