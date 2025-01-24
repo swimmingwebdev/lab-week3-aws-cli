@@ -6,7 +6,7 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-# pass the bucket name as a positional parameter
+# Pass the bucket name as a positional parameter
 bucket_name=$1
 region="us-west-2"
 
@@ -14,13 +14,14 @@ region="us-west-2"
 if aws s3api head-bucket --bucket "$bucket_name" 2>/dev/null; then
     echo "Bucket $bucket_name already exists."
 else
-  # create the bucket
-  if aws s3api create-bucket \
+    # Create the bucket
+    if aws s3api create-bucket \
         --bucket "$bucket_name" \
         --region "$region" \
         --create-bucket-configuration LocationConstraint="$region"; then
-        echo "Bucket $bucket_name created successfully in region $region."
+        echo "$bucket_name created successfully in $region."
     else
-        echo "Failed to create bucket $bucket_name."
+        echo "Failed to create $bucket_name."
         exit 1
+    fi
 fi
