@@ -4,8 +4,17 @@ set -eu
 
 region="us-west-2"
 key_name="bcitkey"
+public_key_file="./bcitkey.pub"
 
 source ./infrastructure_data
+
+if ! aws ec2 describe-key-pairs --key-name "$key_name" --region "$region" > /dev/null 2>&1; then
+    echo "Importing key pair '$key_name'..."
+    aws ec2 import-key-pair --key-name "$key_name" --public-key-material fileb://"$public_key_file" --region "$region"
+    echo "Key pair '$key_name' imported successfully."
+else
+    echo "Key pair '$key_name' already exists in AWS."
+fi
 
 # Get Ubuntu 23.04 image id owned by amazon
 ubuntu_ami=$(aws ec2 describe-images --region $region \
